@@ -40,32 +40,31 @@ Use the AWS CloudFormation YAML file `cfn/vpc.yaml` following the below steps to
 
 ![Primary VPC subnets](screenshots/primaryVPC_subnets.png) _Primary VPC subnets_
 
-![Primary subnet routing](screenshots/primary_subnet_routing_.png) _Primary subnet routing_
+![Primary subnet routing](screenshots/primary_subnet_routing.png) _Primary subnet routing_
 
 ![Primary RDS subnet group](screenshots/primaryDB_subnetgroup.png) _Primary RDS subnet group_
 
 ![Secondary VPC subnets](screenshots/secondaryVPC_subnets.png) _Secondary VPC subnets_
 
-![Secondary subnet routing](screenshots/secondary_subnet_routing_.png) _Secondary subnet routing_
+![Secondary subnet routing](screenshots/secondary_subnet_routing.png) _Secondary subnet routing_
 
 ![Secondary RDS subnet group](screenshots/secondaryDB_subnetgroup.png) _Secondary RDS subnet group_
 
 1. Create a new MySQL, multi-AZ database in the active region:
-
-  - Choose "Standard Create"
-  - Must be a MySQL database
-  - Choose the "Production" template
-  - Select "burstable" instance class
-  - Use "General Purpose" storage
-  - Select Multi-AZ database
-  - Must be in the newly created VPC in the newly created subnet group
-  - Must have only the "UDARR-Database" security group
-  - Must have an initial database called "udacity"
-  - Must have automatic backups enabled for a period of 7 days.
+    - Choose "Standard Create"
+    - Must be a MySQL database
+    - Choose the "Production" template
+    - Select "burstable" instance class
+    - Use "General Purpose" storage
+    - Select Multi-AZ database
+    - Must be in the newly created VPC in the newly created subnet group
+    - Must have only the "UDARR-Database" security group
+    - Must have an initial database called "udacity"
+    - Must have automatic backups enabled for a period of 7 days.
 
 ![Primary DB configuration](screenshots/primaryDB_config.png) _Primary DB configuration_
 
-1. Create a read replica database in the standby region. This database has the same requirements as the database in the active region.
+2. Create a read replica database in the standby region. This database has the same requirements as the database in the active region.
 
 ![Secondary DB configuration](screenshots/secondaryDB_config.png) _Secondary DB configuration_
 
@@ -135,7 +134,7 @@ MySQL [udacity]>
 
 1. Observe the "DB Connections" to the database
 
-![Connections](screenshots/connections.png) _Connections_
+![Connections](screenshots/monitoring_connections.png) _Connections_
 
 1. Observe the "Replication" configuration
 
