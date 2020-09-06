@@ -140,9 +140,73 @@ MySQL [udacity]>
 
 ![Replication](screenshots/monitoring_replication.png) _Replication_
 
-## Part 2: TBD
+## Part 2: Failover And Recovery
 
-TBD
+Before promoting the read replica database:
+
+```
+[ec2-user@ip-10-2-10-109 ~]$ mysql -h udacitydb-read-replica.cblrlxmyeroy.eu-central-1.rds.amazonaws.com -D udacity -u admin -p
+Enter password: 
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MySQL connection id is 44
+Server version: 8.0.17 Source distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MySQL [udacity]> INSERT INTO `users`(`nick_name`, `first_name`, `last_name`, `email`, `about`, `admin`)
+    -> VALUE('arthur', 'Arthur', 'Dent', 'arthur@dent.net', 'The sandwich-maker', 0);
+ERROR 1290 (HY000): The MySQL server is running with the --read-only option so it cannot execute this statement
+MySQL [udacity]> SELECT * FROM users;
++----+-----------+------------+------------+-----------------------+-------------------------------+-------+---------------------+
+| id | nick_name | first_name | last_name  | email                 | about                         | admin | created_at          |
++----+-----------+------------+------------+-----------------------+-------------------------------+-------+---------------------+
+|  1 | zaphod    | Zaphod     | Beeblebrox | zaphod@beeblebrox.net | President Zaphod Beeblebrox I |     1 | 2020-09-06 12:50:52 |
++----+-----------+------------+------------+-----------------------+-------------------------------+-------+---------------------+
+1 row in set (0.00 sec)
+
+MySQL [udacity]>
+```
+
+![Before promotion](screenshots/rr_before_promotion.png) _Before promotion_
+
+After promoting the read replica database:
+
+```
+[ec2-user@ip-10-2-10-109 ~]$ mysql -h udacitydb-read-replica.cblrlxmyeroy.eu-central-1.rds.amazonaws.com -D udacity -u admin -p
+Enter password: 
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MySQL connection id is 7
+Server version: 8.0.17 Source distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MySQL [udacity]> INSERT INTO `users`(`nick_name`, `first_name`, `last_name`, `email`, `about`, `admin`)
+    -> VALUE('arthur', 'Arthur', 'Dent', 'arthur@dent.net', 'The sandwich-maker', 0);
+Query OK, 1 row affected (0.00 sec)
+
+MySQL [udacity]> SELECT * FROM users;
++----+-----------+------------+------------+-----------------------+-------------------------------+-------+---------------------+
+| id | nick_name | first_name | last_name  | email                 | about                         | admin | created_at          |
++----+-----------+------------+------------+-----------------------+-------------------------------+-------+---------------------+
+|  1 | zaphod    | Zaphod     | Beeblebrox | zaphod@beeblebrox.net | President Zaphod Beeblebrox I |     1 | 2020-09-06 12:50:52 |
+|  2 | arthur    | Arthur     | Dent       | arthur@dent.net       | The sandwich-maker            |     0 | 2020-09-06 14:14:45 |
++----+-----------+------------+------------+-----------------------+-------------------------------+-------+---------------------+
+2 rows in set (0.00 sec)
+
+MySQL [udacity]>
+```
+
+![After promotion](screenshots/rr_after_promotion.png) _After promotion_
 
 ## Part 3: TBD
 
