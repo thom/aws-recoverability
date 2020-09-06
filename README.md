@@ -208,9 +208,32 @@ MySQL [udacity]>
 
 ![After promotion](screenshots/rr_after_promotion.png) _After promotion_
 
-## Part 3: TBD
+## Part 3: Website Resiliency
 
-TBD
+Build a resilient static web hosting solution in AWS:
+
+1. Create a versioned S3 bucket and configure it as a static website
+2. Upload the files from the GitHub repo (under `s3/`)
+
+![Original website uploaded](screenshots/s3_original.png) _Original website uploaded_
+
+After modifying `index.html` and uploading the new version:
+
+![Modified website](screenshots/s3_season.png) _Modified website_
+
+Since the S3 bucket is versioned, previous versions can easily be restored:
+
+![Reverted website](screenshots/s3_season_revert.png) _Reverted website_
+
+Deleting a versioned object does not actually delete it but only sets a delete marker:
+
+![Deleted website](screenshots/s3_deletion.png) _Deleted website_
+
+![Delete marker](screenshots/s3_delete_marker.png) _Delete marker_
+
+Removing the delete marker restores the object:
+
+![Deletion reverted](screenshots/s3_delete_revert.png) _Deletion reverted_
 
 ## Requirements
 
