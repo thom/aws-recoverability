@@ -2,12 +2,14 @@
 
 This project creates highly available solutions to common use cases:
 
-- Multi-Availability Zone, Multi-Region database showing how to use it in multiple geographically separate AWS regions
+- Multi-Availability Zone, Multi-Region database showing how to use it in
+  multiple geographically separate AWS regions
 - Versioned website hosting solution so that any data destruction and accidents can be quickly and easily undone
 
 ## Infrastructure setup
 
-Use the AWS CloudFormation YAML file `cfn/vpc.yaml` following the below steps to create the required infrastructure:
+Use the AWS CloudFormation YAML file `cfn/vpc.yaml` following the below steps to
+create the required infrastructure:
 
 1. Go to "Services: CloudFormation"
 2. Create stack "With new resources (standard)"
@@ -25,7 +27,8 @@ Use the AWS CloudFormation YAML file `cfn/vpc.yaml` following the below steps to
 9. Click Next
 10. Click Next again
 11. Click Create stack
-12. Wait for the stack to build out. Refresh until status becomes "CREATE_COMPLETE"
+12. Wait for the stack to build out. Refresh until status becomes
+    "CREATE_COMPLETE"
 13. Observe the "Outputs" tab for the created IDs. These will be used later.
 
 ![Primary VPC](screenshots/primary_Vpc.png) _Primary VPC_
@@ -64,31 +67,56 @@ Use the AWS CloudFormation YAML file `cfn/vpc.yaml` following the below steps to
 
 ![Primary DB configuration](screenshots/primaryDB_config.png) _Primary DB configuration_
 
-2. Create a read replica database in the standby region. This database has the same requirements as the database in the active region.
+2. Create a read replica database in the standby region. This database has the
+   same requirements as the database in the active region.
 
 ![Secondary DB configuration](screenshots/secondaryDB_config.png) _Secondary DB configuration_
 
 ### Availability Estimate
 
-Recover Time Objective (RTO) is the maximum time the platform or service can be unavailable.
+Recover Time Objective (RTO) is the maximum time the platform or service can be
+unavailable.
 
-Recovery Point Objective (RPO) is the maximum amount of time that the system can lose data for. RPO is not tied to whether the system is available, it is a measure of the window of time that data may be lost in.
+Recovery Point Objective (RPO) is the maximum amount of time that the system can
+lose data for. RPO is not tied to whether the system is available, it is a
+measure of the window of time that data may be lost in.
 
 #### Minimum RTO for a single AZ outage
 
-See the [AWS documentation](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html) for details on high availability (Multi-AZ). In the event of a planned or unplanned outage of your DB instance, Amazon RDS automatically switches to a standby replica in another Availability Zone if you have enabled Multi-AZ. The time it takes for the failover to complete depends on the database activity and other conditions at the time the primary DB instance became unavailable. Failover times are typically 60–120 seconds. However, large transactions or a lengthy recovery process can increase failover time. When the failover is complete, it can take additional time for the RDS console to reflect the new Availability Zone.
+See the [AWS documentation](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html)
+for details on high availability (Multi-AZ). In the event of a planned or
+unplanned outage of your DB instance, Amazon RDS automatically switches to a
+standby replica in another Availability Zone if you have enabled Multi-AZ. The
+time it takes for the failover to complete depends on the database activity and
+other conditions at the time the primary DB instance became unavailable.
+Failover times are typically 60–120 seconds. However, large transactions or a
+lengthy recovery process can increase failover time. When the failover is
+complete, it can take additional time for the RDS console to reflect the new
+Availability Zone.
 
 #### Minimum RTO for a single region outage
 
-If there is a single region outage, the read replicate in the secondary region needs to be manually promoted in the AWS console. The replication between the master and read replica is asynchronous. The promotion of the read replica takes a few minuts to complete and the endpoint of the read replica is different from the master, so the replica promotion requires also a change in all the applications that use the database. We can assume an RTO of about 10 minutes.
+If there is a single region outage, the read replica in the secondary region
+needs to be manually promoted in the AWS console. The replication between the
+master and read replica is asynchronous. The promotion of the read replica takes
+a few minutes to complete and the endpoint of the read replica is different from
+the master, so the replica promotion requires also a change in all the
+applications that use the database. We can assume an RTO of about 10 minutes.
 
 #### Minimum RPO for a single AZ outage
 
-If we assume that the replication is in sync at the time of the outage, the RPO is zero. As failover times from the primary to the standby instance are typically 60-120 seconds, it is however possible that data can be lost during the switch.
+If we assume that the replication is in sync at the time of the outage, the RPO
+is zero. As failover times from the primary to the standby instance are
+typically 60-120 seconds, it is however, possible that data can be lost during
+the switch.
 
 #### Minimum RPO for a single region outage
 
-If we again assume that the replication is in sync at the time of the outage, the RPO is zero. As we have to manually promote the replica and change the database endpoint configuration in all the applications that use the database, it is however possible that data can be lost during the switch (about 10 minutes).
+If we again assume that the replication is in sync at the time of the outage,
+the RPO is zero. As we have to manually promote the replica and change the
+database endpoint configuration in all the applications that use the database,
+it is however, possible that data can be lost during the switch (about 10
+minutes).
 
 ### Demonstrate normal usage
 
@@ -225,7 +253,7 @@ Since the S3 bucket is versioned, previous versions can easily be restored:
 
 ![Reverted website](screenshots/s3_season_revert.png) _Reverted website_
 
-Deleting a versioned object does not actually delete it but only sets a delete marker:
+Deleting a versioned object does not delete it but only sets a delete marker:
 
 ![Deleted website](screenshots/s3_deletion.png) _Deleted website_
 
